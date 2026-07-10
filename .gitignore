@@ -11,22 +11,22 @@ build/
 *.egg
 pip-wheel-metadata/
 
-# Virtual environments
+# 虚拟环境
 venv/
 .venv/
 env/
 ENV/
 
-# Local configuration and secrets
-config.yaml
-config.local.yaml
-*.local.yaml
+# 本地配置（含 ADB 路径、飞书密钥等敏感信息）
+# config.yaml
+# config.local.yaml
+# *.local.yaml
 
-# Runtime logs and debug output
+# 运行时日志与调试输出
 logs/
 *.log
 
-# Test, type-check, and coverage output
+# 测试 / 类型检查 / 覆盖率
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
@@ -36,7 +36,7 @@ htmlcov/
 .tox/
 .nox/
 
-# IDEs and editors
+# IDE / 编辑器
 .vscode/
 .idea/
 *.swp
@@ -46,12 +46,12 @@ htmlcov/
 # Cursor
 .cursor/
 
-# Operating system files
+# 操作系统
 .DS_Store
 Thumbs.db
 Desktop.ini
 ehthumbs.db
 
-# Temporary files
+# 临时文件
 *.bak
 *.tmp

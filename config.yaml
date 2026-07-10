@@ -1,0 +1,250 @@
+# 游戏自动化脚本全局配置
+
+emulator:
+  device_id: "emulator-5554"   # ADB 设备 ID，可通过 `adb devices` 查看
+  max_width: 1920               # scrcpy 视频流最大宽度（像素）
+  max_fps: 12                   # scrcpy 最大帧率
+  adb_path: "D:\\leidian\\LDPlayer9\\adb.exe"
+
+tasks:
+  # 任务公共默认：tasks.<任务名> 中同名字段会覆盖此处（优先级：任务 > defaults > 代码默认）
+  defaults:
+    dismiss_blank_pos: [400, 1700]    # 所有关闭图标均未找到时点击的空白坐标
+    max_home_retries: 5               # 回首页最大重试次数
+
+  red_packet_task:
+    tick_ms: 500                    # 任务专属 Tick 间隔（毫秒）；未配置则沿用 scheduler.tick_ms
+    chat_check_interval: 1200         # 寻找红包时每隔多少 tick 确认一次聊天界面（50ms/tick，1200=1分钟）
+
+    # 扫描 / 点击时序（秒）
+    scan_interval_secs: 1.0           # 未找到红包时的扫描间隔
+    click_delay_secs: 0.5            # 点击红包到点击开启按钮的延迟
+    open_after_click_delay_secs: 1.0  # 点击开启按钮后，等待1s再进行下一步
+    verify_wait_secs: 0.5             # 按返回键后等待重新检测的时间
+    enter_chat_wait_secs: 0.8         # 点击聊天 Tab 后等待的时间
+    enter_home_chat_wait_secs: 1.0    # 从首页进入聊天后等待的时间
+    max_check_chat_retries: 3         # 连续检测不到聊天界面时回首页的阈值
+
+    # 红包识别阈值
+    red_packet_threshold: 0.9
+
+    # 聊天 Tab 入口固定点
+    world_chat_entry_pos: [159, 139]
+    alliance_chat_entry_pos: [435, 142]
+
+    # 从首页进入聊天的固定点
+    home_to_chat_pos: [263, 1747]
+
+    # 点击红包后的开启固定点
+    world_open_pos: [438, 1500]
+    alliance_open_pos: [428, 1215]
+
+    # 抢完后滑动到底部参数（手指从下往上滑，使内容向上滚动显示最新消息）
+    swipe_bottom_times: 3             # 滑动次数（可配置多次确保滑到底）
+    swipe_bottom_x: 400
+    swipe_bottom_y1: 1500             # 滑动起点 Y
+    swipe_bottom_y2: 1100            # 滑动终点 Y
+    swipe_bottom_duration_ms: 300   # 每次滑动时长（毫秒）
+
+  bear_attack_task:
+    # tick_ms: 50                     # 任务专属 Tick 间隔（毫秒）；未配置则沿用 scheduler.tick_ms
+    # 固定点快速打熊配置
+    # 队伍配置：队伍编号 -> 对应模板名称（命中其中任意一个即认为该队伍可用）
+    teams:
+      1: ["阳光队伍"]
+      2: []
+      3: []
+      4: []
+
+    # 队伍模板列表框固定排序（按此顺序优先展示，其余模板排在后面）
+    team_display_order: ["阳光队伍"]
+
+    # 集结页检测模板（与“联盟战争”类似，但建议用专门模板）
+    rally_template: "熊集结页"
+
+    # 进入编队按钮坐标计算：x 固定，y = 队伍模板命中 y + 偏移
+    enter_group_button_x: 770
+    enter_group_button_y_offset: 134
+    # 进入编队按钮 y 必须命中以下任一范围，否则视为无效并跳过继续找队伍
+    enter_group_button_y_valid_ranges:
+      - [1448, 1496]
+      - [997, 1007]
+      - [508, 518]
+    # 前两次“查找到队伍”时，额外允许的 enter_y 范围（按查找顺序计数，不看队伍编号）
+    # 会与 enter_group_button_y_valid_ranges 合并后做 enter_y 校验
+    first_two_team_y_extra_valid_ranges:
+      - [462, 475]
+      - [951, 965]
+      - [1439, 1452]
+
+    # 固定点坐标（按你的分辨率实测后填写）
+    expedition_button_point: [656, 1842]  # 出征按钮
+
+    # 编队固定点：队伍1 -> 编队1，队伍2 -> 编队2 ...
+    group_points:
+      1: [81, 149]
+      2: [165, 146]
+      3: [256, 146]
+      4: [432, 148]
+
+    # 命中某队伍后，该队伍（该编号下所有模板）冷却时长（秒）
+    team_cooldown_secs: 324
+
+    # 独立延时配置（秒）
+    delay_before_find_swords_secs: 2              # 点击联盟tab后，延时再查找两把剑
+    delay_before_click_rally_tab_after_swords_secs: 0.5   # 点击两把剑后，延时再点集结tab固定点
+    rally_tab_point_after_swords: [163, 154]              # 点击两把剑后的兼容点击：集结tab固定点
+    delay_before_check_rally_page_after_tab_click_secs: 0.5  # 点集结tab后，延时再查找熊集结页
+    delay_before_click_group_secs: 0.2              # 点击进入编队按钮后，延时再点编队
+    delay_before_click_expedition_secs: 0.3         # 点击编队后，延时再点出征
+    delay_after_click_expedition_check_secs: 1    # 点击出征后，延时再检查是否在集结页
+
+    # 集结页定时下滑（仅在 FIND_TEAM 状态执行）
+    rally_scroll_interval_secs: 60                   # 每隔多少秒执行一次下滑；<=0 表示关闭
+    rally_scroll_times: 2                            # 每次触发执行的下滑次数；<=0 表示关闭
+    rally_scroll_start_point: [445, 1273]          # 下滑起点 A
+    rally_scroll_end_point: [428, 714]            # 下滑终点 B
+    rally_scroll_duration_secs: 0.2                # 下滑时长 x（秒）
+
+    # 每次“进入集结页”后执行的滑动（触发点：首次进入集结页、点击出征后再次回到集结页）
+    rally_page_enter_scroll_times: 2               # 执行次数；<=0 表示关闭
+    rally_page_enter_scroll_start_point: [419, 1504]
+    rally_page_enter_scroll_end_point: [415, 776]
+    rally_page_enter_scroll_duration_secs: 0.1     # 100ms
+
+    # 关键状态的 tick 重试
+    state_retry_ticks:
+      CHECK_RALLY_PAGE: 4
+      FIND_ALLIANCE_TAB: 4
+
+  bear_attack_debug_task:
+    # 打熊最小等待时间调试任务
+    # 模拟"已找到队伍"后的完整出征流程，用于测量各步骤最小可行等待时间
+
+    # 集结页检测模板
+    rally_template: "熊集结页"
+
+    # 步骤1：点击「进入编队」的固定点坐标（等价于原任务找到队伍后的点击）
+    enter_group_point: [766, 1448]
+
+    # 步骤2：点击「编队」的固定点坐标（编队按钮）
+    group_point: [81, 146]
+
+    # 步骤3：点击「出征」的固定点坐标
+    expedition_point: [662, 1848]
+
+    # 各步骤之间的等待时长（秒），调小此值即可测试最短响应时间
+    delay_before_click_group_secs: 0.1         # 进入编队 → 点击编队
+    delay_before_click_expedition_secs: 0.1    # 点击编队 → 点击出征
+    delay_after_click_expedition_check_secs: 0.3  # 点击出征 → 检测集结页
+
+  alliance_mobilization_task:
+    # 进入联盟总动员活动页的导航配置
+    delay_after_enter_secs: 0.5          # 点击"常规活动"后等待页面加载的时长（秒）
+    delay_after_tab_click_secs: 0.5      # 点击"联盟总动员tab"后等待的时长（秒）
+    max_swipe_times: 2                   # 最大横向滑动次数
+    swipe_start_point: [571, 168]        # 横向滑动起点坐标 [x, y]
+    swipe_end_point: [155, 172]          # 横向滑动终点坐标 [x, y]
+    swipe_duration_secs: 3.0             # 每次滑动持续时长（秒）
+    max_home_retries: 5                  # 回首页最大重试次数
+
+  giant_beast_rally_task:
+    tick_ms: 500                     # 任务专属 Tick 间隔（毫秒）；未配置则沿用 scheduler.tick_ms
+    # ── 检测与冷却 ────────────────────────────────────────────────────────────
+    # 每次检测间隔（秒），默认 2 秒
+    check_interval_secs: 2.0
+    # 每次集结成功后的冷却时间（秒），默认 6 分钟（360 秒）
+    rally_cooldown_secs: 450.0
+    # 集结点击序列每步间隔（秒），默认 1 秒
+    click_interval_secs: 2.0
+    # 点击出征后等待多少秒再验证结果（秒），默认 1 秒
+    verify_wait_secs: 1.0
+
+    # ── OCR 识别 ──────────────────────────────────────────────────────────────
+    # OCR 裁剪区域 [x1, y1, x2, y2]（识别当前集结队伍数量；须覆盖完整数字，勿过窄）
+    ocr_region: [805, 598, 872, 632]
+    # 识别到的数字小于等于此阈值（或未识别到数字）时发起集结
+    ocr_count_threshold: 15
+
+    # ── 集结点击序列坐标 ──────────────────────────────────────────────────────
+    find_btn_pos:         [59, 1431]    # 查找按钮
+    beast_btn_pos:        [295, 1473]   # 冰原巨兽
+    search_btn_pos:       [435, 1842]   # 搜索
+    rally_btn_pos:        [435, 798]    # 集结
+    launch_rally_btn_pos: [433, 1194]   # 发起集结
+    team_btn_pos:         [344, 146]    # 编队
+    expedition_btn_pos:   [662, 1836]   # 出征
+
+    # ── 导航 ──────────────────────────────────────────────────────────────────
+    # 回首页/进野外最大重试次数
+    max_home_retries: 5
+
+  alliance_monitor_task:
+    tick_ms: 300                    # 任务专属 Tick 间隔（毫秒）；未配置则沿用 scheduler.tick_ms
+    # 为 true 时专属刷新与公共抢可同时开启（面板不再互斥停另一路）。
+    # 公共在「启动时专属已在运行」的情况下跳过进入工作阶段后的首次 pub_scroll（避免与专属回顶滑动冲突）。
+    concurrent_exclusive_public: false
+    # 公共任务：true 时点击目标模板后查找「接受任务」并点击；false 时仅飞书通知（不点目标、不点接受）
+    pub_auto_accept: true
+    # 拳头匹配中心 y 下限：仅匹配 y > 该值；不写此项且 concurrent_exclusive_public 为 true 时默认 1023；
+    # 在 alliance_monitor_task 中写 pub_fist_center_y_min: null 可显式关闭 y 过滤（并发下也全屏找）
+    # pub_fist_center_y_min: 1023
+    # ── 模板匹配（本任务专用；不写 vision_threshold 则用全局 scrcpy_tracker.threshold）──
+    vision_grayscale: false   # 默认 true 灰度匹配；false 为 BGR 三通道匹配
+    # vision_threshold: 0.86  # 可选，覆盖全局阈值
+
+    # ── 专属任务刷新配置 ──────────────────────────────────────────────────────
+    # 目标模板列表（坑位中匹配到任意一个且积分满足条件时发飞书提醒）
+    valuable_templates:
+      - "拳头"
+      # - "专精石"
+    # 积分阈值：OCR 识别到的积分超过此值才视为目标任务
+    score_threshold: 500
+    # 每轮检查间隔（秒），默认 2 分钟（未配置坑位独立刷新时作为兜底值）
+    check_interval_secs: 120
+    # 坑位独立刷新间隔（秒）：坑位1、坑位2
+    # 可选 120（2分钟）或 300（5分钟），UI 面板可运行中动态调整
+    slot_refresh_secs: [300, 300]
+    # 刷新任务后游戏内冷却时长（秒），用于日志提示，实际等待由 check_interval_secs 控制
+    refresh_cooldown_secs: 300
+    # 点击坑位中心后，等待"刷新任务"按钮出现的时间（秒）
+    click_wait_secs: 1.0
+    # 点击"刷新任务"后，等待"确认刷新任务"按钮出现的时间（秒）
+    confirm_refresh_wait_secs: 1.0
+    # 坑位1 任一路径结束后，再开始坑位2 的等待（秒）
+    post_slot1_wait_secs: 1.5
+    # 专属任务滑动回顶部参数（ADB）
+    exc_scroll_start: [432, 876]
+    exc_scroll_end: [420, 1271]
+    exc_scroll_ms: 1000
+
+    # ── 公共任务抢配置 ────────────────────────────────────────────────────────
+    # 公共池要匹配的模板（与 assets 中模板文件名/键一致）；按顺序匹配，先命中者优先。默认仅「拳头」。
+    pub_templates:
+      - "拳头"
+      # - "通用加速"
+    # 点击目标模板后，等待"接受任务"按钮出现的时间（秒）
+    accept_wait_secs: 0.8
+    # 公共任务滑动到公共池参数（ADB）
+    pub_scroll_start: [426, 1032]
+    pub_scroll_end: [432, 753]
+    pub_scroll_ms: 3000
+
+scheduler:
+  tick_ms: 50                  # 全局默认 Tick 间隔毫秒数（任务可单独覆盖）
+  tick_count_max: 100000       # Tick 计数器归零阈值（达到后从 0 重新计数）
+
+logging:
+  level: INFO                   # 日志级别：DEBUG / INFO / WARNING / ERROR
+
+scrcpy_tracker:
+  threshold: 0.86               # 模板匹配置信度阈值
+  method: TM_CCOEFF_NORMED      # 匹配方法：TM_CCOEFF_NORMED / TM_CCORR_NORMED / TM_SQDIFF_NORMED
+  scale: 1.0                    # 模板缩放比例（1.0 = 不缩放）
+  track_interval: 8             # 每 N 帧触发一次模板匹配
+
+feishu_bot:
+  enabled: true
+  app_id: "cli_a9677xxxxxx89bc3"
+  app_secret: "dMeqItOvnxxxxxxxAqBJTh6RbJLXQOmm"
+  default_chat_id: "oc_a4a7c9cxxxxxxc2a74c9a301c3edce"
