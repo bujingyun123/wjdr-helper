@@ -1,0 +1,38 @@
+{
+  "templates": [
+    {
+      "name": "paste_20260426_142620",
+      "path": "D:\\workspace\\wjdr-helper\\tools\\pasted_templates\\paste_20260426_142620.png",
+      "enabled": true
+    },
+    {
+      "name": "paste_20260426_142915",
+      "path": "D:\\workspace\\wjdr-helper\\tools\\pasted_templates\\paste_20260426_142915.png",
+      "enabled": true
+    },
+    {
+      "name": "钻石",
+      "path": "D:\\workspace\\wjdr-helper\\tools\\pasted_templates\\钻石.png",
+      "enabled": true
+    },
+    {
+      "name": "砖石2",
+      "path": "D:\\workspace\\wjdr-helper\\tools\\pasted_templates\\砖石2.png",
+      "enabled": true
+    },
+    {
+      "name": "土豆队伍",
+      "path": "D:\\workspace\\wjdr-helper\\tools\\pasted_templates\\土豆队伍.png",
+      "enabled": true
+    }
+  ],
+  "adb_path": "D:\\leidian\\LDPlayer9\\adb.exe",
+  "threshold": 0.7693950177935943,
+  "method": "TM_CCOEFF_NORMED",
+  "device": "emulator-5554",
+  "scale": 1.0,
+  "auto_click": false,
+  "delay": 0.3,
+  "multiscale": false,
+  "batch_interval": 2.0
+}
